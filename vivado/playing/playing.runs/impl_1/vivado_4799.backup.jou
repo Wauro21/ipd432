@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Fri Sep 10 10:58:09 2021
+# Process ID: 4799
+# Current directory: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.runs/impl_1
+# Command line: vivado -log led_switch.vdi -applog -product Vivado -messageDb vivado.pb -mode batch -source led_switch.tcl -notrace
+# Log file: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.runs/impl_1/led_switch.vdi
+# Journal file: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.runs/impl_1/vivado.jou
+#-----------------------------------------------------------
+source led_switch.tcl -notrace

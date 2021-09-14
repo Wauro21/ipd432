@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenRun Id="impl_1" LaunchPart="xc7a100tcsg324-1" LaunchTime="1631282490">
+  <File Type="WBT-USG" Name="usage_statistics_webtalk.html"/>
+  <File Type="BITSTR-SYSDEF" Name="led_switch.sysdef"/>
+  <File Type="BITSTR-LTX" Name="debug_nets.ltx"/>
+  <File Type="BITSTR-LTX" Name="led_switch.ltx"/>
+  <File Type="BG-BGN" Name="led_switch.bgn"/>
+  <File Type="RNPI_FILE" Name="led_switch.rnpi"/>
+  <File Type="BG-DRC" Name="led_switch.drc"/>
+  <File Type="CFI_FILE" Name="led_switch.cfi"/>
+  <File Type="RCFI_FILE" Name="led_switch.rcfi"/>
+  <File Type="BITSTR-MMI" Name="led_switch.mmi"/>
+  <File Type="BITSTR-BMM" Name="led_switch_bd.bmm"/>
+  <File Type="BITSTR-NKY" Name="led_switch.nky"/>
+  <File Type="BITSTR-RBT" Name="led_switch.rbt"/>
+  <File Type="RBD_FILE" Name="led_switch.rbd"/>
+  <File Type="BITSTR-MSK" Name="led_switch.msk"/>
+  <File Type="NPI_FILE" Name="led_switch.npi"/>
+  <File Type="BG-BIN" Name="led_switch.bin"/>
+  <File Type="PDI-FILE" Name="led_switch.pdi"/>
+  <File Type="BG-BIT" Name="led_switch.bit"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-RPX" Name="led_switch_bus_skew_postroute_physopted.rpx"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW-PB" Name="led_switch_bus_skew_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-BUS-SKEW" Name="led_switch_bus_skew_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-RPX" Name="led_switch_timing_summary_postroute_physopted.rpx"/>
+  <File Type="RDI-RDI" Name="led_switch.vdi"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING-PB" Name="led_switch_timing_summary_postroute_physopted.pb"/>
+  <File Type="POSTROUTE-PHYSOPT-TIMING" Name="led_switch_timing_summary_postroute_physopted.rpt"/>
+  <File Type="POSTROUTE-PHYSOPT-BLACKBOX-DCP" Name="led_switch_postroute_physopt_bb.dcp"/>
+  <File Type="POSTROUTE-PHYSOPT-DCP" Name="led_switch_postroute_physopt.dcp"/>
+  <File Type="ROUTE-BUS-SKEW" Name="led_switch_bus_skew_routed.rpt"/>
+  <File Type="ROUTE-CLK" Name="led_switch_clock_utilization_routed.rpt"/>
+  <File Type="ROUTE-SIMILARITY" Name="led_switch_incremental_reuse_routed.rpt"/>
+  <File Type="ROUTE-TIMING-RPX" Name="led_switch_timing_summary_routed.rpx"/>
+  <File Type="ROUTE-TIMING-PB" Name="led_switch_timing_summary_routed.pb"/>
+  <File Type="ROUTE-TIMINGSUMMARY" Name="led_switch_timing_summary_routed.rpt"/>
+  <File Type="ROUTE-STATUS-PB" Name="led_switch_route_status.pb"/>
+  <File Type="ROUTE-STATUS" Name="led_switch_route_status.rpt"/>
+  <File Type="ROUTE-PWR-RPX" Name="led_switch_power_routed.rpx"/>
+  <File Type="ROUTE-PWR-SUM" Name="led_switch_power_summary_routed.pb"/>
+  <File Type="ROUTE-PWR" Name="led_switch_power_routed.rpt"/>
+  <File Type="ROUTE-METHODOLOGY-DRC-PB" Name="led_switch_methodology_drc_routed.pb"/>
+  <File Type="ROUTE-METHODOLOGY-DRC-RPX" Name="led_switch_methodology_drc_routed.rpx"/>
+  <File Type="ROUTE-METHODOLOGY-DRC" Name="led_switch_methodology_drc_routed.rpt"/>
+  <File Type="ROUTE-DRC-RPX" Name="led_switch_drc_routed.rpx"/>
+  <File Type="ROUTE-DRC-PB" Name="led_switch_drc_routed.pb"/>
+  <File Type="ROUTE-DRC" Name="led_switch_drc_routed.rpt"/>
+  <File Type="ROUTE-BLACKBOX-DCP" Name="led_switch_routed_bb.dcp"/>
+  <File Type="ROUTE-DCP" Name="led_switch_routed.dcp"/>
+  <File Type="ROUTE-ERROR-DCP" Name="led_switch_routed_error.dcp"/>
+  <File Type="PHYSOPT-TIMING" Name="led_switch_timing_summary_physopted.rpt"/>
+  <File Type="PHYSOPT-DRC" Name="led_switch_drc_physopted.rpt"/>
+  <File Type="PHYSOPT-DCP" Name="led_switch_physopt.dcp"/>
+  <File Type="POSTPLACE-PWROPT-TIMING" Name="led_switch_timing_summary_postplace_pwropted.rpt"/>
+  <File Type="POSTPLACE-PWROPT-DCP" Name="led_switch_postplace_pwropt.dcp"/>
+  <File Type="PLACE-TIMING" Name="led_switch_timing_summary_placed.rpt"/>
+  <File Type="PLACE-PRE-SIMILARITY" Name="led_switch_incremental_reuse_pre_placed.rpt"/>
+  <File Type="PLACE-SIMILARITY" Name="led_switch_incremental_reuse_placed.rpt"/>
+  <File Type="PLACE-CTRL" Name="led_switch_control_sets_placed.rpt"/>
+  <File Type="PLACE-UTIL-PB" Name="led_switch_utilization_placed.pb"/>
+  <File Type="PLACE-UTIL" Name="led_switch_utilization_placed.rpt"/>
+  <File Type="PLACE-CLK" Name="led_switch_clock_utilization_placed.rpt"/>
+  <File Type="PLACE-IO" Name="led_switch_io_placed.rpt"/>
+  <File Type="PLACE-DCP" Name="led_switch_placed.dcp"/>
+  <File Type="PWROPT-TIMING" Name="led_switch_timing_summary_pwropted.rpt"/>
+  <File Type="PWROPT-DRC" Name="led_switch_drc_pwropted.rpt"/>
+  <File Type="PWROPT-DCP" Name="led_switch_pwropt.dcp"/>
+  <File Type="OPT-TIMING" Name="led_switch_timing_summary_opted.rpt"/>
+  <File Type="OPT-HWDEF" Name="led_switch.hwdef"/>
+  <File Type="OPT-METHODOLOGY-DRC" Name="led_switch_methodology_drc_opted.rpt"/>
+  <File Type="OPT-DRC" Name="led_switch_drc_opted.rpt"/>
+  <File Type="OPT-DCP" Name="led_switch_opt.dcp"/>
+  <File Type="INIT-TIMING" Name="led_switch_timing_summary_init.rpt"/>
+  <File Type="ROUTE-BUS-SKEW-RPX" Name="led_switch_bus_skew_routed.rpx"/>
+  <File Type="REPORTS-TCL" Name="led_switch_reports.tcl"/>
+  <File Type="ROUTE-BUS-SKEW-PB" Name="led_switch_bus_skew_routed.pb"/>
+  <File Type="PA-TCL" Name="led_switch.tcl"/>
+  <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
+    <Filter Type="Srcs"/>
+    <File Path="$PSRCDIR/sources_1/new/mod_led_switch.sv">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="DesignMode" Val="RTL"/>
+      <Option Name="TopModule" Val="led_switch"/>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+    <Filter Type="Constrs"/>
+    <File Path="$PPRDIR/../../con_Nexys4DDR_Master.xdc">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+      </FileInfo>
+    </File>
+    <Config>
+      <Option Name="ConstrsType" Val="XDC"/>
+    </Config>
+  </FileSet>
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+    <Filter Type="Utils"/>
+    <Config>
+      <Option Name="TopAutoSet" Val="TRUE"/>
+    </Config>
+  </FileSet>
+  <Strategy Version="1" Minor="2">
+    <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2021">
+      <Desc>Default settings for Implementation.</Desc>
+    </StratHandle>
+    <Step Id="init_design"/>
+    <Step Id="opt_design"/>
+    <Step Id="power_opt_design"/>
+    <Step Id="place_design"/>
+    <Step Id="post_place_power_opt_design"/>
+    <Step Id="phys_opt_design"/>
+    <Step Id="route_design"/>
+    <Step Id="post_route_phys_opt_design"/>
+    <Step Id="write_bitstream"/>
+  </Strategy>
+</GenRun>

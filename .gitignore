@@ -1,4 +1,4 @@
 # Ignore Kicad project files
 **/*.sch-bak
-kikad/**/.lib
+kikad/**/*.lib
 kikad/**/*-cache

@@ -1,8 +1,8 @@
 Copyright 1986-2021 Xilinx, Inc. All Rights Reserved.
 ------------------------------------------------------------------------------------------------------------------------
 | Tool Version : Vivado v.2021.1 (lin64) Build 3247384 Thu Jun 10 19:36:07 MDT 2021
-| Date         : Fri Sep 10 11:02:00 2021
-| Host         : mauricio-TARRO running 64-bit elementary OS 5.1.7 Hera
+| Date         : Thu Oct  7 14:48:52 2021
+| Host         : tarro running 64-bit elementary OS 6 Odin
 | Command      : report_drc -file led_switch_drc_routed.rpt -pb led_switch_drc_routed.pb -rpx led_switch_drc_routed.rpx
 | Design       : led_switch
 | Device       : xc7a100tcsg324-1

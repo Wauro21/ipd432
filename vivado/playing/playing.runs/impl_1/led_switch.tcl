@@ -17,7 +17,7 @@ proc create_report { reportName command } {
   }
 }
 namespace eval ::optrace {
-  variable script "/mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.runs/impl_1/led_switch.tcl"
+  variable script "/mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/vivado/playing/playing.runs/impl_1/led_switch.tcl"
   variable category "vivado_impl"
 }
 
@@ -125,7 +125,7 @@ set rc [catch {
   create_msg_db write_bitstream.pb
   set_param chipscope.maxJobs 3
   open_checkpoint led_switch_routed.dcp
-  set_property webtalk.parent_dir /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.cache/wt [current_project]
+  set_property webtalk.parent_dir /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/vivado/playing/playing.cache/wt [current_project]
 set_property TOP led_switch [current_fileset]
 OPTRACE "read constraints: write_bitstream" START { }
 OPTRACE "read constraints: write_bitstream" END { }

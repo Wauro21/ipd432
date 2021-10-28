@@ -20,7 +20,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='/mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/vivado/playing/playing.runs/impl_1'
+HD_PWD='/mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/vivado/playing/playing.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

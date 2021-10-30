@@ -1,4 +1,4 @@
-module FSM #(
+module PB_FSM #(
 	parameter N_INCREMENT_DELAY_CONTINUOUS = 10
 	)
 (

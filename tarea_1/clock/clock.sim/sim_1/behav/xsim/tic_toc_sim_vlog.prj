@@ -1,0 +1,10 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../clock.srcs/sources_1/new/tictoc.sv" \
+"../../../../clock.srcs/sim_1/new/tic_toc_sim.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

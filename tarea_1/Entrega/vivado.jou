@@ -1,0 +1,16 @@
+#-----------------------------------------------------------
+# Vivado v2021.1 (64-bit)
+# SW Build 3247384 on Thu Jun 10 19:36:07 MDT 2021
+# IP Build 3246043 on Fri Jun 11 00:30:35 MDT 2021
+# Start of session at: Sun Oct 31 04:08:21 2021
+# Process ID: 1450305
+# Current directory: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/tarea_1/Entrega
+# Command line: vivado
+# Log file: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/tarea_1/Entrega/vivado.log
+# Journal file: /mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/tarea_1/Entrega/vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project /home/mauricio/Tarea_1/1_4/clock.xpr
+update_compile_order -fileset sources_1
+launch_runs synth_1 -jobs 6
+wait_on_run synth_1

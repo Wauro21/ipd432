@@ -2,3 +2,6 @@ Running: xsim.dir/FSM_sim_behav/xsimk -simmode gui -wdb FSM_sim_behav.wdb -simru
 Design successfully loaded
 Design Loading Memory Usage: 34976 KB (Peak: 35096 KB)
 Design Loading CPU Usage: 30 ms
+Simulation completed
+Simulation Memory Usage: 116972 KB (Peak: 174244 KB)
+Simulation CPU Usage: 40 ms

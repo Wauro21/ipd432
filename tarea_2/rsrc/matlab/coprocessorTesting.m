@@ -7,6 +7,7 @@ N=1024;  % define el numero de elementos de cada vector
 A=ceil(rand(N,1)*254);
 B=ceil(rand(N,1)*254);
 
+
 %Guarda vectores A y B (cada uno de una columna de 1024 filas) en un
 %archivo de texto. Cada linea del archivo contiene un elemento.
 h= fopen('VectorA.txt', 'w');

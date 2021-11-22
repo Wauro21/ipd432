@@ -9,7 +9,7 @@
 // Project Name:
 // Target Devices:
 // Tool Versions:
-// Description:
+// Description: Does loopback to test the correct functioning of the UART module.
 //
 // Dependencies:
 //
@@ -27,6 +27,9 @@ module top_uart(
   output UART_TXD_IN
   );
 
+  logic [7:0] loopback;
+  logic common_flag;
+
   uart_basic#(
       .CLK_FREQUENCY(100000000),
       .BAUD_RATE(115200)
@@ -35,13 +38,12 @@ module top_uart(
   .clk(CLK100MHZ),
   .reset(CPU_RESETN),
   .rx(UART_RXD_OUT),
-  .rx_data(),
-  .rx_ready(),
+  .rx_data(loopback),
+  .rx_ready(common_flag),
   .tx(UART_TXD_IN),
-  .tx_start,
-  .tx_data(),
+  .tx_start(common_flag),
+  .tx_data(loopback),
   .tx_busy()
   );
-
 
 endmodule

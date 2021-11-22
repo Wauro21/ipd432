@@ -6,7 +6,7 @@
 <Project Version="7" Minor="55" Path="/mnt/shared/Linux/gdrive/usm/2021-s2/ipd432/repo/tarea_2/coprocessor/coprocessor.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="f5db9872698a47c6863f194731d302e1"/>
+    <Option Name="Id" Val="f471671e55414098be8638cabbf20568"/>
     <Option Name="Part" Val="xc7a100tcsg324-1"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -140,7 +140,7 @@
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
       <Filter Type="Constrs"/>
-      <File Path="$PSRCDIR/constrs_1/new/constraint_coprocessor.xdc">
+      <File Path="$PSRCDIR/constrs_1/new/contraint_coprocessor.xdc">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>

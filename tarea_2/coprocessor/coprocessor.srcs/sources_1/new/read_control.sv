@@ -24,24 +24,24 @@ module read_tx  #(
   parameter MEMORY_DEPTH = 8,
   parameter ADDRESS_WIDTH = 8,
   parameter WAIT_READ_CYCLES = 3
-  )(
-  input logic clk,
-  input logic reset,
-  input logic enable,
-  input logic tx_busy,
-  output logic [ADDRESS_WIDTH-1:0] read_address,
-  output logic done,
-  output logic tx_start
-    );
+)
+(
+  input   logic clk,
+  input   logic reset,
+  input   logic fetch,
+  output  logic [ADDRESS_WIDTH-1:0] read_address,
+  output  logic done,
+  output  logic byte_read
+);
 
   // FSM logic
-  typedef enum logic [2:0] {IDLE, READ, WAIT_READ, ADDRESS, DONE} state;
+  typedef enum logic [2:0] {IDLE, READ, WAIT_READ, PUSH, ADDRESS, DONE} state;
   state current_state, next_state;
 
   // Inner Logic
   logic max_address, waited, count_enable, over_address;
   localparam  WAIT_WIDTH = $clog2(WAIT_READ_CYCLES);
-  logic[WAIT_WIDTH-1:0] wait_cycles;
+  logic [WAIT_WIDTH - 1:0] wait_cycles;
 
   // FSM READ_TX
   always_ff @ (posedge clk) begin
@@ -52,11 +52,12 @@ module read_tx  #(
   always_comb begin
     next_state = IDLE;
     done = 1'b0;
-    tx_start = 1'b0;
     count_enable = 1'b0;
-    case (current_state)
+    byte_read = 1'b0;
 
-      IDLE: if(enable) next_state = READ;
+    case (current_state)
+    
+      IDLE: if (fetch) next_state = READ;
 
       READ: begin
         if (over_address) next_state = DONE;
@@ -64,18 +65,28 @@ module read_tx  #(
       end
 
       WAIT_READ: begin
-        if(waited) next_state = ADDRESS;
-        else next_state = WAIT_READ;
+        next_state = WAIT_READ;
+        if (waited) next_state = PUSH;
+      end
+
+      PUSH: begin
+        next_state = PUSH;
+        byte_read = 1'b1;
+        if (~fetch) begin
+          next_state = ADDRESS;
+        end
       end
 
       ADDRESS: begin
         count_enable = 1'b1;
-        next_state = READ;
+        next_state = IDLE;
       end
 
       DONE: begin
         done = 1'b1;
-        next_state = IDLE;
+        if (~fetch) begin
+          next_state = IDLE;
+        end
       end
 
     endcase
@@ -83,19 +94,19 @@ module read_tx  #(
 
   //address_counter
   address_counter #(
-      .MEMORY_DEPTH(MEMORY_DEPTH),
-      .ADDRESS_WIDTH(ADDRESS_WIDTH)
-      )
-      READ_ADDRESS
-      (
-      .clk(clk),
-      .reset(reset),
-      .enable(count_enable),
-      .clear(done),
-      .address(read_address),
-      .max_address(max_address),
-      .over_address(over_address)
-      );
+    .MEMORY_DEPTH(MEMORY_DEPTH),
+    .ADDRESS_WIDTH(ADDRESS_WIDTH)
+  )
+  READ_ADDRESS
+  (
+    .clk(clk),
+    .reset(reset),
+    .enable(count_enable),
+    .clear(done),
+    .address(read_address),
+    .max_address(max_address),
+    .over_address(over_address)
+  );
 
 
   // WAIT counter

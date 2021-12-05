@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module read_tx  #(
+module read_control  #(
   parameter MEMORY_DEPTH = 8,
   parameter ADDRESS_WIDTH = 8,
   parameter WAIT_READ_CYCLES = 3

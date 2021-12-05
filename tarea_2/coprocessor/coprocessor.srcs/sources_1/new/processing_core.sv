@@ -1,5 +1,6 @@
 module processing_core #(
-  parameter CMD_WIDTH = 3
+  parameter CMD_WIDTH = 3,
+  parameter MEMORY_DEPTH = 1024
 )
 (
   input   logic clk,
@@ -21,7 +22,7 @@ module processing_core #(
   output  logic [7:0] tx_data
 );
   
-  typedef enum logic [3:0] {IDLE, WRITE_BRAM, READ_VEC, SUM_VEC, AVG_VEC, MAN_DIST, EUC_DIST, TO_HOST} state;
+  typedef enum logic [CMD_WIDTH - 1:0] {IDLE, WRITE_BRAM, READ_VEC, FETCH, OP, TO_HOST} state;
 
   localparam WRITE_CMD  = 3'd1;
   localparam READ_CMD   = 3'd2;
@@ -30,7 +31,6 @@ module processing_core #(
   localparam MAN_CMD    = 3'd5;
   localparam EUC_CMD    = 3'd6;
 
-  localparam MEMORY_DEPTH = 1024; // 8 For testing
   localparam ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
   localparam WAIT_READ_CYCLES = 3;
   
@@ -52,7 +52,7 @@ module processing_core #(
     else current_state <= next_state;
 
     if (man_accum_flag) begin
-      dist_accum <= diff[15] == 1 ? dist_accum - diff : dist_accum + diff; // CHECK TESTBENCH
+      dist_accum <= dist_accum + diff; // CHECK TESTBENCH
     end
 
     if (euc_accum_flag) begin
@@ -75,14 +75,14 @@ module processing_core #(
     case (current_state)
 
       IDLE: begin
+        dist_accum = 20'd0;
+        diff = 16'd0;
+
         if (cmd_flag) begin
           case (cmd_dec)
             WRITE_CMD:  next_state = WRITE_BRAM;
             READ_CMD:   next_state = READ_VEC;
-            default: begin
-              next_state = OP;
-              dist_accum = 20'd0;
-            end
+            default: next_state = OP;
           endcase
         end
       end
@@ -175,7 +175,9 @@ module processing_core #(
               next_state = TO_HOST;
             end
             else begin
-              diff = brama_read[7:0] - bramb_read[7:0];
+              if (brama_read] > bramb_read]) diff = brama_read] - bramb_read];
+              else diff = bramb_read] - brama_read];
+              
               man_accum_flag = 1'b1;
               next_state = FETCH; // Maybe check man_accum_done before
             end 
@@ -186,7 +188,9 @@ module processing_core #(
               dist_accum
             end
             else begin
-              diff = brama_read[7:0] - bramb_read[7:0];
+              if (brama_read] > bramb_read]) diff = brama_read] - bramb_read];
+              else diff = bramb_read] - brama_read];
+
               euc_accum_flag = 1'b1; // Maybe check euc_accum_done before
               next_state = FETCH;
             end
@@ -219,7 +223,7 @@ module processing_core #(
   FSM_WRITE
   (
     .clk(CLK100MHZ),
-    .reset(reset),
+    .reset(~reset),
     .enable(enable_write),
     .rx_ready(rx_ready),
     .write_enable(write_enable),
@@ -236,7 +240,7 @@ module processing_core #(
   FSM_READ_BRAMA
   (
     .clk(CLK100MHZ),
-    .reset(reset),
+    .reset(~reset),
     .fetch(brama_fetch),
     .read_address(brama_read_addr),
     .done(brama_read_done)
@@ -252,7 +256,7 @@ module processing_core #(
   FSM_READ_BRAMB
   (
     .clk(CLK100MHZ),
-    .reset(reset),
+    .reset(~reset),
     .fetch(bramb_fetch),
     .read_address(bramb_read_addr),
     .done(bramb_read_done)

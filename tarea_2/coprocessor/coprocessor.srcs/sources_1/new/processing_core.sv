@@ -175,8 +175,8 @@ module processing_core #(
               next_state = TO_HOST;
             end
             else begin
-              if (brama_read] > bramb_read]) diff = brama_read] - bramb_read];
-              else diff = bramb_read] - brama_read];
+              if (brama_read > bramb_read) diff = brama_read - bramb_read;
+              else diff = bramb_read - brama_read;
               
               man_accum_flag = 1'b1;
               next_state = FETCH; // Maybe check man_accum_done before
@@ -185,11 +185,13 @@ module processing_core #(
 
           EUC_CMD:
             if (brama_read_done & bramb_read_done) begin
-              dist_accum
+              tx_data = dist_accum >> ADDRESS_WIDTH;
+              tx_start = 1'b1;
+              next_state = TO_HOST;
             end
             else begin
-              if (brama_read] > bramb_read]) diff = brama_read] - bramb_read];
-              else diff = bramb_read] - brama_read];
+              if (brama_read > bramb_read) diff = brama_read - bramb_read;
+              else diff = bramb_read - brama_read;
 
               euc_accum_flag = 1'b1; // Maybe check euc_accum_done before
               next_state = FETCH;
@@ -243,7 +245,7 @@ module processing_core #(
     .reset(~reset),
     .fetch(brama_fetch),
     .read_address(brama_read_addr),
-    .done(brama_read_done)
+    .done(brama_read_done),
     .byte_read(brama_byte_read)
   );
 
@@ -259,32 +261,8 @@ module processing_core #(
     .reset(~reset),
     .fetch(bramb_fetch),
     .read_address(bramb_read_addr),
-    .done(bramb_read_done)
+    .done(bramb_read_done),
     .byte_read(bramb_byte_read)
   );
 
-  // CAST IN TOP TOP TOP MODULE
-  /*
-  // Memory block BRAMA
-  blk_mem_gen_0 BRAMA (
-    .clka(CLK100MHZ),    // input wire clka
-    .wea(brama_write_en),      // input wire [0 : 0] wea
-    .addra(brama_write_addr),  // input wire [9 : 0] addra
-    .dina(rx_data),    // input wire [7 : 0] dina
-    .clkb(CLK100MHZ),    // input wire clkb
-    .addrb(brama_read_addr),  // input wire [9 : 0] addrb
-    .doutb(brama_read)  // output wire [7 : 0] doutb
-  );
-
-  // Memory block BRAMB
-  blk_mem_gen_0 BRAMB (
-    .clka(CLK100MHZ),    // input wire clka
-    .wea(bramb_write_en),      // input wire [0 : 0] wea
-    .addra(bramb_write_addr),  // input wire [9 : 0] addra
-    .dina(rx_data),    // input wire [7 : 0] dina
-    .clkb(CLK100MHZ),    // input wire clkb
-    .addrb(bramb_read_addr),  // input wire [9 : 0] addrb
-    .doutb(bramb_read)  // output wire [7 : 0] doutb
-  );
-  */
-  
+endmodule

@@ -99,3 +99,5 @@ module device (
     .core_lock,
     .tx_data
   );
+  
+endmodule

@@ -54,3 +54,5 @@ module cmd_decoder #(
       end
     endcase
   end
+  
+endmodule

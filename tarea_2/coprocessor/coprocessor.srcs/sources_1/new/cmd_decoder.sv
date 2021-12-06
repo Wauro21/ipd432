@@ -50,7 +50,7 @@ module cmd_decoder #(
           cmd_dec = 'b0;
           cmd_flag = 1'b0;
         end
-        else next_state = CORE_LOCK;
+        else next_state = LOCK;
       end
     endcase
   end

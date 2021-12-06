@@ -12,9 +12,10 @@ module device (
   assign JA[1] = UART_RXD_OUT;
 
   // Memory Logic
-  localparam  MEMORY_DEPTH = 1024; // 8 For testing
-  localparam  ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
-  localparam  WAIT_READ_CYCLES = 3;
+  localparam MEMORY_DEPTH = 1024; // 8 For testing
+  localparam ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
+  localparam WAIT_READ_CYCLES = 3;
+  localparam CMD_WIDTH = 3; 
 
   logic [ADDRESS_WIDTH - 1:0] write_address;
   logic [ADDRESS_WIDTH - 1:0] read_address;
@@ -23,7 +24,7 @@ module device (
   logic [7:0] rx_data, tx_data;
 
   logic [CMD_WIDTH - 1:0] cmd_dec;
-  logic cmd_lock, cmd_flag, bram_sel;
+  logic cmd_lock, cmd_flag, bram_sel, core_lock;
 
   logic [7:0] brama_read, bramb_read;
   logic [9:0] brama_write_addr, brama_read_addr;

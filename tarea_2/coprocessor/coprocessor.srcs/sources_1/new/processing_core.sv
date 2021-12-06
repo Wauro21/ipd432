@@ -35,7 +35,7 @@ module processing_core #(
   localparam WAIT_READ_CYCLES = 3;
   
   state current_state, next_state;
-  logic write_done, enable_write, write_enable, tx_start, tx_busy;
+  logic write_done, enable_write, write_enable, tx_start;
   logic brama_read_done, brama_byte_read, brama_fetch, brama_queued;
   logic bramb_read_done, bramb_byte_read, bramb_fetch, bramb_queued;
 
@@ -112,7 +112,7 @@ module processing_core #(
           brama_fetch = 1'b1;  
 
           if (brama_byte_read) begin
-            tx_data = brama_out_data;
+            tx_data = brama_read;
             tx_start = 1'b1;       
             next_state = TO_HOST;
           end
@@ -121,7 +121,7 @@ module processing_core #(
           bramb_fetch = 1'b1;
 
           if (bramb_byte_read) begin
-            tx_data = bramb_out_data;
+            tx_data = bramb_read;
             tx_start = 1'b1;       
             next_state = TO_HOST;
           end

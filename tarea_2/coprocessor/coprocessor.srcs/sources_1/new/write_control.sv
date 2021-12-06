@@ -58,20 +58,24 @@ module write_control  #(
       end
 
       WRITE:  begin
-        write_enable = 1'b1;
+        nx_state = WRITE;
+        if(rx_ready) begin
+          write_enable = 1'b1;  
+          nx_state = ADDRESS;
+        end
+        
         if (max_address) nx_state = DONE;
-        else nx_state = ADDRESS;
       end
 
       ADDRESS:  begin
         count_enable = 1'b1;
-        nx_state = HOLD;
+        nx_state = WRITE;
       end
 
-      HOLD: begin
-        if(rx_ready) nx_state = WRITE;
-        else nx_state = HOLD;
-      end
+      // HOLD: begin
+      //   if(rx_ready) nx_state = WRITE;
+      //   else nx_state = HOLD;
+      // end
 
       DONE: begin
         done = 1'b1;

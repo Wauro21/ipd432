@@ -90,11 +90,9 @@ module processing_core #(
 
       IDLE: begin
         if (cmd_flag) begin
-          case (cmd_dec)
-            WRITE_CMD:  next_state = WRITE_BRAM;
-            READ_CMD:   next_state = READ_VEC;
-            default: next_state = OP;
-          endcase
+          if (cmd_dec == WRITE_CMD) next_state = WRITE_BRAM;
+          else if (cmd_dec == READ_CMD) next_state = READ_VEC;
+          else next_state = OP;
         end
       end
 
@@ -163,11 +161,8 @@ module processing_core #(
         case (cmd_dec)
 
           SUM_CMD: begin
-            if (brama_read_done & bramb_read_done)
-
             tx_data = brama_read + bramb_read;
             tx_start = 1'b1;
-
             next_state = TO_HOST;
           end
 
@@ -192,7 +187,7 @@ module processing_core #(
             end 
           end
 
-          EUC_CMD:
+          EUC_CMD: begin
             if (brama_read_done & bramb_read_done) begin
               tx_data = dist_accum >> ADDRESS_WIDTH;
               tx_start = 1'b1;
@@ -204,7 +199,8 @@ module processing_core #(
 
               euc_accum_flag = 1'b1; // Maybe check euc_accum_done before
               next_state = FETCH;
-            end
+            end            
+          end
 
         endcase
       end
@@ -277,6 +273,8 @@ module processing_core #(
 
   logic CLK_ILA;
   logic [7:0] div_cnt;
+  logic cmp_cmd;
+  assign cmp_cmd = cmd_dec == WRITE_CMD;
   
   always_ff @(posedge clk) begin
     if (~reset) begin
@@ -294,14 +292,14 @@ module processing_core #(
   
   ila_0 your_instance_name (
     .clk(CLK_ILA), // input wire clk    
-    
-    .probe0(core_lock), // input wire [0:0]  probe0
-    .probe1(cmd_flag), // input wire [0:0]  probe1   
-    .probe2(cmd_dec), // input wire [7:0]  probe2 
-    .probe3(brama_write_addr), // input wire [9:0]  probe3 
-    .probe4(brama_byte_read), // input wire [7:0]  probe4
-    .probe5(tx_data), // input wire [7:0]  probe5
-    .probe6(write_done) // input wire [0:0]  probe6  
+  
+    .probe0(core_lock), // input wire [0:0]  probe0  
+    .probe1(cmd_flag), // input wire [0:0]  probe1 
+    .probe2(cmd_dec), // input wire [2:0]  probe2 
+    .probe3(current_state), // input wire [2:0]  probe3 
+    .probe4(write_done), // input wire [0:0]  probe4 
+    .probe5(enable_write), // input wire [0:0]  probe5 
+    .probe6(rx_ready) // input wire [0:0]  probe6
   );
 
 endmodule

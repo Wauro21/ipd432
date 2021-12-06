@@ -29,7 +29,7 @@ module cmd_decoder #(
     
     if (current_state == IDLE) cmd_dec <= 'd0;
     
-    if (cmd_flag) begin
+    if (cmd_store_flag) begin
       cmd_dec <= rx_data[2:0];
       bram_sel <= rx_data[4];
     end    
@@ -37,11 +37,15 @@ module cmd_decoder #(
 
   always_comb begin
     next_state = IDLE;
+    cmd_store_flag = 1'b0;
     cmd_flag = 1'b0;
 
     case (current_state)
       IDLE: begin
-        if (rx_ready) next_state = DECODING;
+        if (rx_ready) begin
+          cmd_store_flag = 1'b1;
+          next_state = DECODING;
+        end
       end
 
       DECODING: begin

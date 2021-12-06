@@ -36,6 +36,8 @@ module processing_core #(
   
   state current_state, next_state;
   logic write_done, enable_write, write_enable, tx_start;
+  logic [ADDRESS_WIDTH - 1:0] write_address;
+
   logic brama_read_done, brama_byte_read, brama_fetch, brama_queued;
   logic bramb_read_done, bramb_byte_read, bramb_fetch, bramb_queued;
 
@@ -50,15 +52,20 @@ module processing_core #(
       current_state <= IDLE;
     end
     else current_state <= next_state;
+
+    // bramx_write_addr setters
+    if (brama_write_en) brama_write_addr <= write_address;
+    if (bramb_write_en) bramb_write_addr <= write_address;
     
+    // dist_accum setters
     if (current_state == IDLE) dist_accum <= 20'd0; 
-
+    // Manhattan distance accumulator
     if (man_accum_flag) begin
-      dist_accum <= dist_accum + diff; // CHECK TESTBENCH
+      dist_accum <= dist_accum + diff;
     end
-
+    // Euclidean distance accumulator
     if (euc_accum_flag) begin
-      dist_accum <= dist_accum + (diff * diff); // CHECK TESTBENCH
+      dist_accum <= dist_accum + (diff * diff);
     end
   end
 
@@ -94,11 +101,9 @@ module processing_core #(
         next_state = WRITE_BRAM;
 
         if (~bram_sel) begin
-          brama_write_addr = write_address;
           brama_write_en = write_enable;
         end 
         else begin
-          bramb_write_addr = write_address;
           bramb_write_en = write_enable;
         end
 

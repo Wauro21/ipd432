@@ -57,7 +57,7 @@ module address_counter  #(
     end
     //  --> Address max flag
     always_comb begin
-      if(address == MEMORY_DEPTH-1) max_address = 1;
+      if (address == MEMORY_DEPTH - 1) max_address = 1;
       else max_address = 0;
     end
 endmodule

@@ -28,7 +28,7 @@ module device (
   assign LED[1] = tx_busy;
 
   logic [CMD_WIDTH - 1:0] cmd_dec;
-  logic cmd_lock, cmd_flag, bram_sel, core_lock;
+  logic cmd_flag, bram_sel, core_lock;
 
   logic [7:0] brama_read, bramb_read;
   logic [9:0] brama_write_addr, brama_read_addr;
@@ -126,7 +126,7 @@ module device (
     .clk(CLK_ILA), // input wire clk
     
     
-    .probe0(cmd_lock), // input wire [0:0]  probe0
+    .probe0(core_lock), // input wire [0:0]  probe0
     .probe1(cmd_flag), // input wire [0:0]  probe1   
     .probe2(cmd_dec), // input wire [7:0]  probe2 
     .probe3(brama_write_addr), // input wire [9:0]  probe3 

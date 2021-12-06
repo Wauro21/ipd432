@@ -19,7 +19,8 @@ module processing_core #(
   output  logic [9:0] bramb_read_addr,
   output  logic bramb_write_en,
   output  logic core_lock,
-  output  logic [7:0] tx_data
+  output  logic [7:0] tx_data,
+  output  logic tx_start
 );
   
   typedef enum logic [CMD_WIDTH - 1:0] {IDLE, WRITE_BRAM, READ_VEC, FETCH, OP, TO_HOST} state;
@@ -35,7 +36,7 @@ module processing_core #(
   localparam WAIT_READ_CYCLES = 3;
   
   state current_state, next_state;
-  logic write_done, enable_write, write_enable, tx_start;
+  logic write_done, enable_write, write_enable;
   logic [ADDRESS_WIDTH - 1:0] write_address;
 
   logic brama_read_done, brama_byte_read, brama_fetch, brama_queued;
@@ -79,13 +80,14 @@ module processing_core #(
     brama_write_en = 1'b0;
     bramb_write_en = 1'b0;
 
+    tx_start = 1'b0;
+
     // COMPLETE DEFAULT VALUES
     
     case (current_state)
 
       IDLE: begin
-        diff = 16'd0;
-
+        enable_write = 1'b0;
         if (cmd_flag) begin
           case (cmd_dec)
             WRITE_CMD:  next_state = WRITE_BRAM;
@@ -230,7 +232,7 @@ module processing_core #(
   )
   FSM_WRITE
   (
-    .clk(CLK100MHZ),
+    .clk(clk),
     .reset(~reset),
     .enable(enable_write),
     .rx_ready(rx_ready),
@@ -247,7 +249,7 @@ module processing_core #(
   )
   FSM_READ_BRAMA
   (
-    .clk(CLK100MHZ),
+    .clk(clk),
     .reset(~reset),
     .fetch(brama_fetch),
     .read_address(brama_read_addr),
@@ -263,12 +265,41 @@ module processing_core #(
   )
   FSM_READ_BRAMB
   (
-    .clk(CLK100MHZ),
+    .clk(clk),
     .reset(~reset),
     .fetch(bramb_fetch),
     .read_address(bramb_read_addr),
     .done(bramb_read_done),
     .byte_read(bramb_byte_read)
+  );
+
+  logic CLK_ILA;
+  logic [7:0] div_cnt;
+  
+  always_ff @(posedge clk) begin
+    if (~reset) begin
+      div_cnt <= 0;
+      CLK_ILA <= 0;
+    end
+    else begin
+      div_cnt <= div_cnt + 1;
+      if ('d100_000) begin
+        div_cnt <= 0;
+        CLK_ILA <= ~CLK_ILA;
+      end  
+    end
+  end
+  
+  ila_0 your_instance_name (
+    .clk(CLK_ILA), // input wire clk    
+    
+    .probe0(core_lock), // input wire [0:0]  probe0
+    .probe1(cmd_flag), // input wire [0:0]  probe1   
+    .probe2(cmd_dec), // input wire [7:0]  probe2 
+    .probe3(brama_write_addr), // input wire [9:0]  probe3 
+    .probe4(brama_byte_read), // input wire [7:0]  probe4
+    .probe5(tx_data), // input wire [7:0]  probe5
+    .probe6(write_done) // input wire [0:0]  probe6  
   );
 
 endmodule

@@ -102,36 +102,8 @@ module device (
     .bramb_read_addr,
     .bramb_write_en,
     .core_lock,
-    .tx_data
+    .tx_data,
+    .tx_start
   );
-  
-  logic CLK_ILA;
-  logic [7:0] div_cnt;
-  
-  always_ff @(posedge CLK100MHZ) begin
-    if (~CPU_RESETN) begin
-      div_cnt <= 0;
-      CLK_ILA <= 0;
-    end
-    else begin
-      div_cnt <= div_cnt + 1;
-      if ('d100_000) begin
-        div_cnt <= 0;
-        CLK_ILA <= ~CLK_ILA;
-      end  
-    end
-  end
-  
-  ila_0 your_instance_name (
-    .clk(CLK_ILA), // input wire clk
     
-    
-    .probe0(core_lock), // input wire [0:0]  probe0
-    .probe1(cmd_flag), // input wire [0:0]  probe1   
-    .probe2(cmd_dec), // input wire [7:0]  probe2 
-    .probe3(brama_write_addr), // input wire [9:0]  probe3 
-    .probe4(rx_data), // input wire [7:0]  probe4
-    .probe5(tx_data) // input wire [7:0]  probe5
-  );
-  
 endmodule

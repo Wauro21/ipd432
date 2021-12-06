@@ -71,23 +71,24 @@ module processing_core #(
   end
 
   always_comb begin
+    next_state = IDLE;
     core_lock = 1'b0;
+    tx_start = 1'b0;
+    enable_write = 1'b0;
+
     man_accum_flag = 1'b0;
     euc_accum_flag = 1'b0;
+
     brama_fetch = 1'b0;
     bramb_fetch = 1'b0;
-
     brama_write_en = 1'b0;
     bramb_write_en = 1'b0;
-
-    tx_start = 1'b0;
 
     // COMPLETE DEFAULT VALUES
     
     case (current_state)
 
       IDLE: begin
-        enable_write = 1'b0;
         if (cmd_flag) begin
           case (cmd_dec)
             WRITE_CMD:  next_state = WRITE_BRAM;
@@ -209,6 +210,7 @@ module processing_core #(
       end
 
       TO_HOST: begin
+        next_state = TO_HOST;
         core_lock = 1'b1;
         if (~tx_busy) begin
           case (cmd_dec)

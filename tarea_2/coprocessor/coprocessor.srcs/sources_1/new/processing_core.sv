@@ -50,6 +50,8 @@ module processing_core #(
       current_state <= IDLE;
     end
     else current_state <= next_state;
+    
+    if (current_state == IDLE) dist_accum <= 20'd0; 
 
     if (man_accum_flag) begin
       dist_accum <= dist_accum + diff; // CHECK TESTBENCH
@@ -75,7 +77,6 @@ module processing_core #(
     case (current_state)
 
       IDLE: begin
-        dist_accum = 20'd0;
         diff = 16'd0;
 
         if (cmd_flag) begin

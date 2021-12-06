@@ -16,16 +16,23 @@ module cmd_decoder #(
   typedef enum logic [1:0] {IDLE, DECODING, LOCK} state;
 
   state current_state, next_state;
+  logic cmd_store_flag;
 
   // FSM
   always_ff @(posedge clk) begin
     if (~reset) begin
       current_state <= IDLE;
-      cmd_dec <= 'b0;
-      cmd_flag <= 1'b0;
+      cmd_dec <= 3'd0;
       bram_sel <= 1'b0;
     end
     else current_state <= next_state;
+    
+    if (current_state == IDLE) cmd_dec <= 'd0;
+    
+    if (cmd_flag) begin
+      cmd_dec <= rx_data[2:0];
+      bram_sel <= rx_data[4];
+    end    
   end
 
   always_comb begin
@@ -38,17 +45,14 @@ module cmd_decoder #(
       end
 
       DECODING: begin
-        cmd_dec = rx_data[2:0];
-        bram_sel = rx_data[4];
         cmd_flag = 1'b1;
-        next_state = LOCK;
+        if (core_lock) next_state = LOCK;
+        else next_state = DECODING;
       end
       
       LOCK: begin
         if (~core_lock) begin
           next_state = IDLE;
-          cmd_dec = 'b0;
-          cmd_flag = 1'b0;
         end
         else next_state = LOCK;
       end

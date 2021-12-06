@@ -11,10 +11,6 @@ module device (
   assign JA[0] = UART_TXD_IN;
   assign JA[1] = UART_RXD_OUT;
   
-  // LED activity
-  assign LED[0] = rx_ready;
-  assign LED[1] = tx_busy;
-
   // Memory Logic
   localparam MEMORY_DEPTH = 1024; // 8 For testing
   localparam ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
@@ -26,6 +22,10 @@ module device (
 
   logic rx_ready, tx_start, tx_busy;
   logic [7:0] rx_data, tx_data;
+  
+  // LED activity
+  assign LED[0] = rx_ready;
+  assign LED[1] = tx_busy;
 
   logic [CMD_WIDTH - 1:0] cmd_dec;
   logic cmd_lock, cmd_flag, bram_sel, core_lock;

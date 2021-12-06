@@ -46,8 +46,8 @@ module cmd_decoder #(
 
       DECODING: begin
         cmd_flag = 1'b1;
+        next_state = DECODING;
         if (core_lock) next_state = LOCK;
-        else next_state = DECODING;
       end
       
       LOCK: begin

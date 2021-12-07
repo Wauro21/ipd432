@@ -13,7 +13,7 @@ module cmd_decoder #(
 );
 
   // FSM Logic
-  typedef enum logic [1:0] {IDLE, DECODING, LOCK} state;
+  typedef enum logic [1:0] {IDLE, DECODING, WAIT_LOCK, LOCK} state;
 
   state current_state, next_state;
   logic cmd_store_flag;
@@ -43,22 +43,24 @@ module cmd_decoder #(
     case (current_state)
       IDLE: begin
         if (rx_ready) begin
-          cmd_store_flag = 1'b1;
           next_state = DECODING;
         end
       end
 
       DECODING: begin
+        cmd_store_flag = 1'b1;
+        next_state = WAIT_LOCK;
+      end
+
+      WAIT_LOCK: begin
+        next_state = WAIT_LOCK;
         cmd_flag = 1'b1;
-        next_state = DECODING;
         if (core_lock) next_state = LOCK;
       end
       
       LOCK: begin
-        if (~core_lock) begin
-          next_state = IDLE;
-        end
-        else next_state = LOCK;
+        next_state = LOCK;
+        if (~core_lock) next_state = IDLE;
       end
     endcase
   end

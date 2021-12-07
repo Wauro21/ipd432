@@ -23,7 +23,7 @@ module processing_core #(
   output  logic tx_start
 );
   
-  typedef enum logic [CMD_WIDTH - 1:0] {IDLE, WRITE_BRAM, READ_VEC, FETCH, OP, TO_HOST} state;
+  typedef enum logic [CMD_WIDTH - 1:0] {IDLE, CMD_DECODE, WRITE_BRAM, READ_VEC, FETCH, OP, TO_HOST} state;
 
   localparam WRITE_CMD  = 3'd1;
   localparam READ_CMD   = 3'd2;
@@ -89,11 +89,14 @@ module processing_core #(
     case (current_state)
 
       IDLE: begin
-        if (cmd_flag) begin
-          if (cmd_dec == WRITE_CMD) next_state = WRITE_BRAM;
-          else if (cmd_dec == READ_CMD) next_state = READ_VEC;
-          else next_state = OP;
-        end
+        if (cmd_flag) next_state = CMD_DECODE;
+      end
+
+      CMD_DECODE: begin
+        core_lock = 1'b1;
+        if (cmd_dec == WRITE_CMD) next_state = WRITE_BRAM;
+        else if (cmd_dec == READ_CMD) next_state = READ_VEC;
+        else next_state = OP;
       end
 
       WRITE_BRAM: begin
@@ -101,12 +104,8 @@ module processing_core #(
         enable_write = 1'b1;
         next_state = WRITE_BRAM;
 
-        if (~bram_sel) begin
-          brama_write_en = write_enable;
-        end 
-        else begin
-          bramb_write_en = write_enable;
-        end
+        if (~bram_sel) brama_write_en = write_enable; 
+        else bramb_write_en = write_enable;
 
         if (write_done) next_state = IDLE;
       end

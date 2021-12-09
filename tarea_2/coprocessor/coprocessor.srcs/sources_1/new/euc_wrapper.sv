@@ -56,7 +56,7 @@ module euc_wrapper#(
     end
   end
 
-  assign data = pre_data*pre_data;
+  //assign data = pre_data*pre_data;
 
 
 
@@ -81,6 +81,7 @@ module euc_wrapper#(
     tx_enable = 1'b0;
     nx_state = IDLE;
     tx_data = 'd0;
+    data = 'd0;
     case (pr_state)
       IDLE: begin
         clear_count = 1'b1;
@@ -93,6 +94,7 @@ module euc_wrapper#(
 
       ACUM: begin
         count_enable = 1'b1;
+        data = pre_data*pre_data;
         nx_state = CHECK;
       end
 

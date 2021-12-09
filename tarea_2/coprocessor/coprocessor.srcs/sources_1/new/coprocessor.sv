@@ -23,7 +23,8 @@
 module coprocessor #(
   parameter CMD_WIDTH = 3,
   parameter MEMORY_DEPTH = 8,
-  parameter ADDRESS_WIDTH = 3
+  parameter ADDRESS_WIDTH = 3,
+  parameter WAIT_READ_CYCLES = 3
   )
   (
     input logic clk,
@@ -56,7 +57,7 @@ module coprocessor #(
   typedef enum logic [2:0] {IDLE, OP_SEL, WRITE,READ,OP, INVALID} state;
   state current_state, next_state;
   // Outputs
-  logic write_block_enable, write_done, read_block_enable, read_done;
+  logic write_block_enable, write_done, read_block_enable, read_done, op_done;
 
 
   always_ff @ (posedge clk) begin
@@ -79,6 +80,10 @@ module coprocessor #(
         case (cmd_dec)
           WRITE_CMD: next_state = WRITE;
           READ_CMD: next_state = READ;
+          SUM_CMD: next_state = OP;
+          AVG_CMD: next_state = OP;
+          MAN_CMD: next_state = OP;
+          EUC_CMD: next_state = OP;
         endcase
       end
 
@@ -96,6 +101,13 @@ module coprocessor #(
         else next_state = READ;
       end
 
+      OP: begin
+        read_block_enable = 1'b1;
+        core_lock = 1'b1;
+        if(read_done) next_state = IDLE;
+        else next_state = OP;
+      end
+
       INVALID: begin
         core_lock = 1'b1;
         next_state = IDLE;
@@ -104,42 +116,49 @@ module coprocessor #(
     endcase
   end
 
+  //------------------------------------------------------------------[OP LOGIC]
+  logic read_flag, next_read;
+
+  operations_block #(
+  .CMD_WIDTH(CMD_WIDTH)
+  )
+  OP_CTRL
+  (
+    .clk(clk),
+    .reset(reset),
+    .cmd_dec(cmd_dec),
+    .bram_sel(bram_sel),
+    .A(read_data_a),
+    .B(read_data_b),
+    .tx_busy(tx_busy),
+    .read_flag(read_flag),
+    .next_read(next_read),
+    .tx_start(tx_start),
+    .tx_data(tx_data)
+  );
   // -------------------------------------------------------------------[Memory]
   // Memory logic
-  logic [ADDRESS_WIDTH-1:0] write_common_address, read_common_address;
+  logic [ADDRESS_WIDTH-1:0] write_common_address;
   logic common_write_enable;
   logic [MEMORY_DEPTH-1:0] read_common_tx_data;
 
-  // Memory full read control
-  read_tx #(
-  .MEMORY_DEPTH(MEMORY_DEPTH),
+  read_fsm_control #(
   .ADDRESS_WIDTH(ADDRESS_WIDTH),
-  .WAIT_READ_CYCLES(3)
+  .MEMORY_DEPTH(MEMORY_DEPTH),
+  .WAIT_READ_CYCLES(WAIT_READ_CYCLES)
   )
-  FULL_READ
+  READ_CTRL
   (
     .clk(clk),
-    .reset(~reset),
+    .reset(reset),
     .enable(read_block_enable),
-    .tx_busy(tx_busy),
-    .read_address(read_common_address),
-    .done(read_done),
-    .tx_start(tx_start)
+    .next_read(next_read),
+    .clear_address(1'b0),
+    .read_flag(read_flag),
+    .read_op_done(read_done),
+    .read_address_a(read_address_a),
+    .read_address_b(read_address_b)
   );
-
-  // Memory full read block selector
-  always_comb begin
-    if(bram_sel) begin
-      read_address_b = read_common_address;
-      read_address_a = 'd0;
-      read_common_tx_data = read_data_b;
-    end
-    else begin
-      read_address_a = read_common_address;
-      read_address_b = 'd0;
-      read_common_tx_data = read_data_a;
-    end
-  end
 
   // Memory write control
   write_control #(
@@ -180,11 +199,5 @@ module coprocessor #(
       write_data_b = 8'd0;
     end
   end
-  //-------------------------------------------------------------------[TX_DATA]
-  always_comb begin
-    tx_data = 'd0;
-    case(current_state)
-      READ: tx_data = read_common_tx_data;
-    endcase
-  end
+
 endmodule

@@ -32,6 +32,7 @@ module top_coprocessor(
   localparam  CMD_WIDTH = 3;
   localparam  MEMORY_DEPTH = 8;
   localparam  ADDRESS_WIDTH = 3;
+  localparam  WAIT_READ_CYCLES = 3;
 
   // Logic
   logic rx_ready, core_lock, cmd_flag, bram_sel, tx_busy, write_enable_a, write_enable_b, tx_start;
@@ -60,7 +61,8 @@ module top_coprocessor(
   coprocessor #(
   .CMD_WIDTH(CMD_WIDTH),
   .MEMORY_DEPTH(MEMORY_DEPTH),
-  .ADDRESS_WIDTH(ADDRESS_WIDTH)
+  .ADDRESS_WIDTH(ADDRESS_WIDTH),
+  .WAIT_READ_CYCLES(WAIT_READ_CYCLES)
   )
   CORE_CORE
   (

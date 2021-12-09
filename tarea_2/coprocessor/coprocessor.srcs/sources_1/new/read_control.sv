@@ -29,13 +29,16 @@ module read_tx  #(
   input logic reset,
   input logic enable,
   input logic tx_busy,
+  input logic op_done,
+  input logic op_override,
   output logic [ADDRESS_WIDTH-1:0] read_address,
   output logic done,
-  output logic tx_start
+  output logic tx_start,
+  output logic op_flag
     );
 
   // FSM logic
-  typedef enum logic [2:0] {IDLE, READ, WAIT_READ, TX, WAIT_TX, ADDRESS, DONE} state;
+  typedef enum logic [2:0] {IDLE, READ, WAIT_READ, OP, TX, WAIT_TX, ADDRESS, DONE} state;
   state pr_state, nx_state;
 
   // Inner Logic
@@ -54,6 +57,7 @@ module read_tx  #(
     done = 1'b0;
     tx_start = 1'b0;
     count_enable = 1'b0;
+    op_flag = 1'b0;
     case (pr_state)
 
       IDLE: if(enable) nx_state = READ;
@@ -64,8 +68,14 @@ module read_tx  #(
       end
 
       WAIT_READ: begin
-        if(waited) nx_state = TX;
+        if(waited) nx_state = OP;
         else nx_state = WAIT_READ;
+      end
+
+      OP: begin
+        op_flag = 1'b1;
+        if(op_done || op_override) nx_state = TX;
+        else nx_state = OP;
       end
 
       TX: begin

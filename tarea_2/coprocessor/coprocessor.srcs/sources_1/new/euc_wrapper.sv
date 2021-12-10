@@ -85,11 +85,14 @@ module euc_wrapper#(
     case (pr_state)
       IDLE: begin
         clear_count = 1'b1;
-        if(read_flag) nx_state = READ;
+        if (enable) nx_state = READ;
       end
 
       READ: begin
-        nx_state = ACUM;
+        nx_state = READ;
+        if(read_flag) nx_state = ACUM;
+        
+        if (~enable) nx_state = IDLE;
       end
 
       ACUM: begin

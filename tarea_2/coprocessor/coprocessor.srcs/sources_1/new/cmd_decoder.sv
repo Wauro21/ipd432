@@ -81,7 +81,7 @@ module cmd_decoder #(
 
   // DECODER
   always_ff @ (posedge clk) begin
-    if(~reset || clear_old_cmd) begin
+    if(~reset | clear_old_cmd) begin
       cmd_dec <= 'd0;
       bram_sel <= 1'b0;
     end

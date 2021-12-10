@@ -41,7 +41,7 @@ module man_wrapper#(
 
   // HOLDER
   logic [23:0] value, nx_value;
-  logic [COUNT_WIDTH-1:0] data;
+  logic [7:0] data;
   // DIFF CALCULATE
   always_comb begin
     if(A > B) begin
@@ -75,15 +75,18 @@ module man_wrapper#(
     tx_enable = 1'b0;
     nx_state = IDLE;
     tx_data = 'd0;
+
     case (pr_state)
       IDLE: begin
         clear_count = 1'b1;
-        if(read_flag) nx_state = READ;
+        if (enable) nx_state = READ;
       end
 
       READ: begin
         nx_state = READ;
         if (read_flag) nx_state = ACUM;
+
+        if (~enable) nx_state = IDLE;
         //else nx_state = READ;
       end
 
@@ -93,7 +96,7 @@ module man_wrapper#(
       end
 
       CHECK: begin
-        if(counter == MEMORY_DEPTH) nx_state = TX1;
+        if (counter == MEMORY_DEPTH) nx_state = TX1;
         else nx_state = NEXT;
       end
 
@@ -125,7 +128,6 @@ module man_wrapper#(
 
       DONE: begin
         op_done = 1'b1;
-        clear_count = 1'b1;
         nx_state = IDLE;
       end
     endcase
@@ -134,7 +136,7 @@ module man_wrapper#(
   // Counter
 
   always_ff @ (posedge clk) begin
-    if(~reset || clear_count) begin
+    if(~reset | clear_count) begin
       counter <= 'd0;
       value <= 'd0;
     end
@@ -154,6 +156,17 @@ module man_wrapper#(
       nx_value = value;
     end
   end
-  
+
+  // ila_0 your_instance_name (
+  //   .clk(clk), // input wire clk
+
+
+  //   .probe0(enable), // input wire [0:0]  probe0  
+  //   .probe1(op_done), // input wire [0:0]  probe1 
+  //   .probe2(value), // input wire [23:0]  probe2 
+  //   .probe3(counter), // input wire [10:0]  probe3
+  //   .probe4(pr_state)
+  // );
+    
 
 endmodule

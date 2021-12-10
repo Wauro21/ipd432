@@ -116,7 +116,7 @@ module read_fsm_control#(
       .clk(clk),
       .reset(~reset),
       .enable(address_enable),
-      .clear(read_op_done || clear_address),
+      .clear(read_op_done | clear_address),
       .address(common_address),
       .max_address(max_address),
       .over_address()

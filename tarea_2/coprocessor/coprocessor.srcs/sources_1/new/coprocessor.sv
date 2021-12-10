@@ -47,11 +47,12 @@ module coprocessor #(
     output logic [ADDRESS_WIDTH-1:0] read_address_b,
     output logic tx_start,
     output logic core_lock,
-    output logic [7:0] tx_data
+    output logic [7:0] tx_data,
+    output logic [6:0] CAT,
+    output logic [7:0] AN
   );
   // Operation definition
   enum logic [CMD_WIDTH-1:0] {WRITE_CMD = 3'd1, READ_CMD = 3'd2, SUM_CMD = 3'd3, AVG_CMD = 3'd4, MAN_CMD = 3'd5, EUC_CMD = 3'd6} commands;
-
 
   // Main FSM
   typedef enum logic [2:0] {IDLE, OP_SEL, WRITE,READ,OP, INVALID} state;
@@ -135,7 +136,9 @@ module coprocessor #(
     .read_flag(read_flag),
     .next_read(next_read),
     .tx_start(tx_start),
-    .tx_data(tx_data)
+    .tx_data(tx_data),
+    .CAT(CAT),
+    .AN(AN)
   );
   // -------------------------------------------------------------------[Memory]
   // Memory logic

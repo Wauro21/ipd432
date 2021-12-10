@@ -33,14 +33,16 @@ module man_wrapper#(
   output logic tx_enable,
   output logic op_done,
   output logic [7:0] tx_data,
-  output logic next_data
+  output logic next_data,
+  output logic [23:0] value
   );
 
   //COUNTER SIZE
   localparam  COUNT_WIDTH = $clog2(MEMORY_DEPTH)+1;
 
   // HOLDER
-  logic [23:0] value, nx_value;
+  // logic [23:0] value, nx_value;
+  logic [23:0] nx_value;
   logic [7:0] data;
   // DIFF CALCULATE
   always_comb begin

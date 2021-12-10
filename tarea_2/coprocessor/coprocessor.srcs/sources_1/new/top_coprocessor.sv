@@ -21,11 +21,13 @@
 
 
 module top_coprocessor(
-  input logic CLK100MHZ,
+  input logic CLK50MHZ,
   input logic CPU_RESETN,
   input logic UART_TXD_IN,
   output logic UART_RXD_OUT,
-  output logic [1:0] JA
+  output logic [1:0] JA,
+  output logic [6:0] CAT,
+  output logic [7:0] AN
   );
 
 
@@ -47,7 +49,7 @@ module top_coprocessor(
   )
   CMD
   (
-    .clk(CLK100MHZ),
+    .clk(CLK50MHZ),
     .reset(CPU_RESETN),
     .rx_ready(rx_ready),
     .rx_data(rx_data),
@@ -66,7 +68,7 @@ module top_coprocessor(
   )
   CORE_CORE
   (
-    .clk(CLK100MHZ),
+    .clk(CLK50MHZ),
     .reset(CPU_RESETN),
     .cmd_flag(cmd_flag),
     .cmd_dec(cmd_dec),
@@ -86,7 +88,9 @@ module top_coprocessor(
     .read_address_b(read_address_b),
     .tx_start(tx_start),
     .core_lock(core_lock),
-    .tx_data(tx_data)
+    .tx_data(tx_data),
+    .CAT(CAT),
+    .AN(AN)
   );
   //----------------------------------------------------------------------[UART]
   // UART MODULE
@@ -95,7 +99,7 @@ module top_coprocessor(
       .BAUD_RATE(115200)
   )
   UART(
-  .clk(CLK100MHZ),
+  .clk(CLK50MHZ),
   .reset(~CPU_RESETN),
   .rx(UART_TXD_IN),
   .rx_data(rx_data),
@@ -110,21 +114,21 @@ module top_coprocessor(
   // MEMORY LOGIC
   // MEMORY MODULE A
   blk_mem_gen_0 BRAMA (
-    .clka(CLK100MHZ),    // input wire clka
+    .clka(CLK50MHZ),    // input wire clka
     .wea(write_enable_a),      // input wire [0 : 0] wea
     .addra(write_address_a),  // input wire [9 : 0] addra
     .dina(write_data_a),    // input wire [7 : 0] dina
-    .clkb(CLK100MHZ),    // input wire clkb
+    .clkb(CLK50MHZ),    // input wire clkb
     .addrb(read_address_a),  // input wire [9 : 0] addrb
     .doutb(read_data_a)  // output wire [7 : 0] doutb
   );
   // MEMORY MODULE B
   blk_mem_gen_0 BRAMB (
-    .clka(CLK100MHZ),    // input wire clka
+    .clka(CLK50MHZ),    // input wire clka
     .wea(write_enable_b),      // input wire [0 : 0] wea
     .addra(write_address_b),  // input wire [9 : 0] addra
     .dina(write_data_b),    // input wire [7 : 0] dina
-    .clkb(CLK100MHZ),    // input wire clkb
+    .clkb(CLK50MHZ),    // input wire clkb
     .addrb(read_address_b),  // input wire [9 : 0] addrb
     .doutb(read_data_b)  // output wire [7 : 0] doutb
   );

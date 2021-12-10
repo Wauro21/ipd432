@@ -35,13 +35,19 @@ module operations_block #(
   input logic read_flag,
   output logic next_read,
   output logic tx_start,
-  output logic [7:0] tx_data
+  output logic [7:0] tx_data,
+  output logic [6:0] CAT,
+  output logic [7:0] AN
   );
 
   enum logic [CMD_WIDTH-1:0] {WRITE_CMD = 3'd1, READ_CMD = 3'd2, SUM_CMD = 3'd3, AVG_CMD = 3'd4, MAN_CMD = 3'd5, EUC_CMD = 3'd6} commands;
 
   logic done, sum_enable, avg_enable, tx_enable, sum_tx_enable, sum_done, avg_tx_enable, avg_done, man_enable, man_tx_enable, man_done, man_next_data, man_read_flag, euc_enable, euc_tx_enable, euc_done, euc_next_data, euc_read_flag;
   logic [7:0] sum_tx_data, avg_tx_data, man_tx_data, euc_tx_data;
+
+  logic [23:0] man_value;
+  logic [15:0] euc_value;
+  logic [31:0] seven_seg_data;
 
   always_comb begin
     tx_enable = 1'b0;
@@ -93,6 +99,41 @@ module operations_block #(
 
 
     endcase
+  end
+
+  logic [23:0] last_man_value;
+  logic [23:0] last_euc_value;
+
+  logic [19:0] man_bcd_out;
+  logic [15:0] euc_bcd_out;
+
+  logic man_conv_bcd, man_done_bcd;
+  logic euc_conv_bcd, euc_done_bcd;
+
+  always_ff @(posedge clk) begin
+    if (~reset) seven_seg_data <= 32'hCCCCCCCC;
+
+    if (man_done) begin
+      last_man_value <= man_value;
+      man_conv_bcd <= 1'b1;
+    end 
+    else man_conv_bcd <= 1'b0;
+
+    if (euc_done) begin
+      last_euc_value <= euc_value;
+      euc_conv_bcd <= 1'b1;
+    end 
+    else euc_conv_bcd <= 1'b0;
+
+    if (man_done_bcd) begin
+      seven_seg_data[19:0] <= man_bcd_out;
+      seven_seg_data[31:20] <= 'hCCC;
+    end
+
+    if (euc_done_bcd) begin
+      seven_seg_data[15:0] <= euc_bcd_out;
+      seven_seg_data[31:16] <= 'hCCCC;
+    end
   end
 
 
@@ -149,7 +190,8 @@ module operations_block #(
     .tx_enable(man_tx_enable),
     .op_done(man_done),
     .tx_data(man_tx_data),
-    .next_data(man_next_data)
+    .next_data(man_next_data),
+    .value(man_value)
   );
 
   euc_wrapper #(
@@ -167,6 +209,45 @@ module operations_block #(
     .tx_enable(euc_tx_enable),
     .op_done(euc_done),
     .tx_data(euc_tx_data),
-    .next_data(euc_next_data)
+    .next_data(euc_next_data),
+    .sqrt_out(euc_value)
+  );
+
+  Binary_to_BCD #(
+    .INPUT_WIDTH(24),
+    .DECIMAL_DIGITS(5)
+  )
+  man_bcd
+  (
+    .i_Clock(clk),
+    .i_Binary(man_value),
+    .i_Start(man_conv_bcd),
+    .o_BCD(man_bcd_out),
+    .o_DV(man_done_bcd)
+  );
+
+  Binary_to_BCD #(
+    .INPUT_WIDTH(16),
+    .DECIMAL_DIGITS(4)
+  )
+  euc_bcd
+  (
+    .i_Clock(clk),
+    .i_Binary(euc_value),
+    .i_Start(euc_conv_bcd),
+    .o_BCD(euc_bcd_out),
+    .o_DV(euc_done_bcd)
+  );
+
+  seven_seg_controller #(
+    .CLK_FREQUENCY('d50_000_000)
+  )
+  seven_seg_mod
+  (
+    .clk,
+    .resetN(reset),
+    .data(seven_seg_data),
+    .cat_out(CAT),
+    .an_out(AN)
   );
 endmodule

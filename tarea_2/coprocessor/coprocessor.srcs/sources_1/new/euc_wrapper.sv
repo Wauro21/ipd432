@@ -33,7 +33,8 @@ module euc_wrapper#(
   output logic tx_enable,
   output logic op_done,
   output logic [7:0] tx_data,
-  output logic next_data
+  output logic next_data,
+  output logic [15:0] sqrt_out
   );
 
   //COUNTER SIZE
@@ -43,7 +44,7 @@ module euc_wrapper#(
   logic [27:0] value, nx_value;
   logic [COUNT_WIDTH-1:0] pre_data;
   logic [2*COUNT_WIDTH-1:0] data;
-  logic [15:0] sqrt_out;
+  // logic [15:0] sqrt_out;
 
   // DIFF CALCULATE
   always_comb begin
@@ -91,7 +92,7 @@ module euc_wrapper#(
       READ: begin
         nx_state = READ;
         if(read_flag) nx_state = ACUM;
-        
+
         if (~enable) nx_state = IDLE;
       end
 

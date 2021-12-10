@@ -27,8 +27,8 @@ module euc_wrapper#(
   input logic reset,
   input logic enable,
   input logic read_flag,
-  input logic [MEMORY_DEPTH-1:0] A,
-  input logic [MEMORY_DEPTH-1:0] B,
+  input logic [7:0] A,
+  input logic [7:0] B,
   input logic tx_done,
   output logic tx_enable,
   output logic op_done,
@@ -41,8 +41,8 @@ module euc_wrapper#(
 
   // HOLDER
   logic [27:0] value, nx_value;
-  logic [MEMORY_DEPTH-1:0] pre_data;
-  logic [2*MEMORY_DEPTH-1:0] data;
+  logic [COUNT_WIDTH-1:0] pre_data;
+  logic [2*COUNT_WIDTH-1:0] data;
   logic [15:0] sqrt_out;
 
   // DIFF CALCULATE

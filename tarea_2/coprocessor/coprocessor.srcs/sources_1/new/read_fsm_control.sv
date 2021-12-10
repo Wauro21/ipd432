@@ -60,7 +60,7 @@ module read_fsm_control#(
     read_op_done = 1'b0;
     case (pr_state)
 
-      IDLE: if(enable) nx_state = FETCH;
+      IDLE: if (enable) nx_state = FETCH;
 
       FETCH: begin
         read_enable = 1'b1;
@@ -85,8 +85,9 @@ module read_fsm_control#(
       end
 
       DONE: begin
+        nx_state = DONE;
         read_op_done = 1'b1;
-        nx_state = IDLE;
+        if (~enable) nx_state = IDLE;
       end
     endcase
   end

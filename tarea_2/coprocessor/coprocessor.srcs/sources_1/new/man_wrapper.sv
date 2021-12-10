@@ -27,8 +27,8 @@ module man_wrapper#(
   input logic reset,
   input logic enable,
   input logic read_flag,
-  input logic [MEMORY_DEPTH-1:0] A,
-  input logic [MEMORY_DEPTH-1:0] B,
+  input logic [7:0] A,
+  input logic [7:0] B,
   input logic tx_done,
   output logic tx_enable,
   output logic op_done,
@@ -41,7 +41,7 @@ module man_wrapper#(
 
   // HOLDER
   logic [23:0] value, nx_value;
-  logic [MEMORY_DEPTH-1:0] data;
+  logic [COUNT_WIDTH-1:0] data;
   // DIFF CALCULATE
   always_comb begin
     if(A > B) begin
@@ -82,7 +82,8 @@ module man_wrapper#(
       end
 
       READ: begin
-        nx_state = ACUM;
+        nx_state = READ;
+        if (read_flag) nx_state = ACUM;
         //else nx_state = READ;
       end
 
@@ -124,7 +125,7 @@ module man_wrapper#(
 
       DONE: begin
         op_done = 1'b1;
-        //clear_count = 1'b1;
+        clear_count = 1'b1;
         nx_state = IDLE;
       end
     endcase

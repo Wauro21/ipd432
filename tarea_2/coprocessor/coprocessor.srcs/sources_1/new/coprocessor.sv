@@ -120,7 +120,8 @@ module coprocessor #(
   logic read_flag, next_read;
 
   operations_block #(
-  .CMD_WIDTH(CMD_WIDTH)
+    .MEMORY_DEPTH(MEMORY_DEPTH),
+    .CMD_WIDTH(CMD_WIDTH)
   )
   OP_CTRL
   (

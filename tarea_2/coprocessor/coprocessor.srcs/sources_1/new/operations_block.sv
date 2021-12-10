@@ -21,6 +21,7 @@
 
 
 module operations_block #(
+  parameter MEMORY_DEPTH = 8,
   parameter CMD_WIDTH = 3
   )
   (
@@ -106,10 +107,7 @@ module operations_block #(
   );
 
   // SUM_CTRL_SEND
-  sum_wrapper #(
-  .MEMORY_DEPTH(8)
-  )
-  SUM_TX_CTRL
+  sum_wrapper SUM_TX_CTRL
   (
     .clk(clk),
     .reset(reset),
@@ -123,10 +121,7 @@ module operations_block #(
   );
 
   // AVG_CTRL_SEND
-  avg_wrapper #(
-  .MEMORY_DEPTH(8)
-  )
-  AVG_TX_CTRL
+  avg_wrapper AVG_TX_CTRL
   (
     .clk(clk),
     .reset(reset),
@@ -140,7 +135,7 @@ module operations_block #(
   );
 
   man_wrapper #(
-  .MEMORY_DEPTH(8)
+  .MEMORY_DEPTH(MEMORY_DEPTH)
   )
   MAN_TX_CTRL
   (
@@ -158,7 +153,7 @@ module operations_block #(
   );
 
   euc_wrapper #(
-  .MEMORY_DEPTH(8)
+  .MEMORY_DEPTH(MEMORY_DEPTH)
   )
   EUC_TX_CTRL
   (

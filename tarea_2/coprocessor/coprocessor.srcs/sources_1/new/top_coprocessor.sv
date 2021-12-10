@@ -30,8 +30,8 @@ module top_coprocessor(
 
 
   localparam  CMD_WIDTH = 3;
-  localparam  MEMORY_DEPTH = 8;
-  localparam  ADDRESS_WIDTH = 3;
+  localparam  MEMORY_DEPTH = 1024;
+  localparam  ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
   localparam  WAIT_READ_CYCLES = 3;
 
   // Logic

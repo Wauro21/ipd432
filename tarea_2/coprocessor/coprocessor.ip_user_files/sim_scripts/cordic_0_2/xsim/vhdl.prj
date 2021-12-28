@@ -1,0 +1,4 @@
+vhdl xil_defaultlib  \
+"../../../../coprocessor.gen/sources_1/ip/cordic_0_2/sim/cordic_0.vhd" \
+
+nosort

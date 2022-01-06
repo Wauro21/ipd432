@@ -49,41 +49,36 @@ module adder_tree #(
   );
   ------------------------------------------*/
   // [INTERNAL BUS]
-  logic [N_SUMS-1:0][ODATA_WIDTH-1:0] internal_sum;
+  logic [N_STAGES:0][PWIDTH-1:0][ODATA_WIDTH-1:0] data;
 
-  // Pipeline
-
-  genvar stage, sums;
+  genvar stage, adder;
   generate
-    for (stage = 1; stage <= N_STAGES; stage++) begin
-      localparam  NUM_SUMS = PWIDTH>>stage;
-      localparam  SUM_INDEX = PWIDTH>>(stage-1);
-      // First stage - Work with the INPUTS
-      if(stage == 'd1) begin
-        for(sums = 0; sums < NUM_SUMS; sums++) begin
-          if(2*sums+1 < INPUTS) begin
-            assign internal_sum[sums] = input_bus[2*sums] + input_bus[2*sums+1];
-          end
-          else if (2*sums < INPUTS) begin
-            // Pair padded with a "zero"
-            assign internal_sum[sums] = input_bus[2*sums];
-          end
-          else begin
-            // Zero padding
-            assign internal_sum[sums] = 'd0;
+    for(stage=0; stage <= N_STAGES; stage++) begin
+      localparam  ST_OUT_NUM = PWIDTH >> stage;
+      //localparam  ST_WIDTH = INPUT_WIDTH + stage;
+      if(stage == 'd0) begin
+        for(adder=0; adder < ST_OUT_NUM; adder++) begin
+          always_comb begin
+            if(adder < INPUTS) begin
+              data[stage][adder] = input_bus[adder];
+              //data[stage][adder][ODATA_WIDTH-1:ST_WIDTH] = 'd0;
+            end
+            else begin
+              data[stage][adder] = 'd0;
+            end
           end
         end
       end
       else begin
-        for(sums = 0; sums < NUM_SUMS; sums++) begin
-          assign internal_sum[SUM_INDEX+sums] = internal_sum[2*sums + OP_INDEX] + internal_sum[2*sums+1 + OP_INDEX];
+        for(adder = 0; adder < ST_OUT_NUM; adder++) begin
+          always_comb begin
+            data[stage][adder] = data[stage-1][adder*2] + data[stage-1][adder*2 +1];
+          end
         end
       end
     end
   endgenerate
 
-  assign output_bus = internal_sum[N_SUMS-1];
-
-
+  assign output_bus = data[N_STAGES][0];
 
 endmodule

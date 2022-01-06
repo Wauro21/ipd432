@@ -1,4 +1,4 @@
-module SIPO #(
+module sipo_reg #(
   parameter MEM_SIZE = 1024
 )
 (

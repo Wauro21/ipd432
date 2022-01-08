@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 module op_sim();
-  logic clk, enable, bram_sel;
+  logic clk, enable, bram_sel, reset;
   enum logic [2:0]{WRITE = 3'd1, READ = 3'd2, SUM = 3'd3, AVG = 3'd4, MAN = 3'd5} commands;
   localparam  INPUTS = 255;
   localparam  INPUT_WIDTH = 8;
@@ -29,18 +29,23 @@ module op_sim();
   logic [INPUTS-1:0][INPUT_WIDTH-1:0] buffer_b;
   logic [INPUTS-1:0][INPUT_WIDTH-1:0] out;
   logic [2:0] cmd;
+  logic op_done;
   op_module #(
     .N_INPUTS(INPUTS),
-    .I_WIDTH(INPUT_WIDTH)
+    .I_WIDTH(INPUT_WIDTH),
+	.CYCLES_WAIT(1)
   )
   OP_MOD
   (
+  	.clk(clk),
+	.reset(reset),
     .cmd(cmd),
     .enable(enable),
     .bram_sel(bram_sel),
     .A(A),
     .B(B),
-    .out(out)
+    .out(out),
+	.op_done(op_done)
   );
 
   genvar i;

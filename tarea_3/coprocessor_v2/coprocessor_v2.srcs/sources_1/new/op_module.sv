@@ -38,17 +38,25 @@ OP_MOD
 module op_module#(
   parameter N_INPUTS = 1024,
   parameter I_WIDTH = 8,
-  parameter CMD_WIDTH = 3
-
+  parameter CMD_WIDTH = 3,
+  parameter CYCLES_WAIT = 1
   )
   (
+  	input logic clk,
+  	input logic reset,
     input logic [CMD_WIDTH-1:0] cmd,
     input logic enable,
     input logic bram_sel,
     input logic [N_INPUTS-1:0][I_WIDTH-1:0] A,
     input logic [N_INPUTS-1:0][I_WIDTH-1:0] B,
-    output logic [N_INPUTS-1:0][I_WIDTH-1:0] out
+    output logic [N_INPUTS-1:0][I_WIDTH-1:0] out,
+	output logic op_done
   );
+
+  // DONE FLAG COUNTER
+  localparam  COUNTER_WIDTH = $clog2(CYCLES_WAIT);
+  logic [COUNTER_WIDTH-1:0] counter;
+
 
   enum logic [CMD_WIDTH-1:0]{WRITE = 3'd1, READ = 3'd2, SUM = 3'd3, AVG = 3'd4, MAN = 3'd5} commands;
   logic [N_INPUTS-1:0][I_WIDTH-1:0] result, man_values;
@@ -96,6 +104,25 @@ module op_module#(
   	.input_bus(man_values),
   	.output_bus(man_result)
   );
+
+  always_ff @ (posedge clk) begin
+	  if(reset) counter <= 'd0;
+	  else begin
+		  if(enable) begin
+		  	if(counter == CYCLES_WAIT-1) counter <= 'd0;
+			else counter <= counter + 'd1;
+		  end
+		  else counter <= 'd0;
+	  end
+  end
+
+  always_comb begin
+	if(enable) begin
+		if(counter == CYCLES_WAIT-1) op_done = 1'b1;
+		else op_done = 1'b0;
+	end
+	else op_done = 1'b0;
+  end
 
 
 endmodule

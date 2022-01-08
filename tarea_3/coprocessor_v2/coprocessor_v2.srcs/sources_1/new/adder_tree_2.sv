@@ -19,6 +19,19 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
+// Instantation template
+/*------------------------------------------
+adder_tree #(
+.INPUTS(),
+.INPUT_WIDTH()
+)
+ADD_TREE
+(
+.enable(),
+.input_bus(),
+.output_bus()
+);
+------------------------------------------*/
 
 module adder_tree #(
   // To be modified
@@ -33,21 +46,10 @@ module adder_tree #(
   (
     //input logic clk,
     //input logic reset,
+    input logic enable,
     input logic [INPUTS-1:0][INPUT_WIDTH-1:0] input_bus,
     output logic [ODATA_WIDTH-1:0] output_bus
   );
-  // Instantation template
-  /*------------------------------------------
-  adder_tree #(
-    .INPUTS(),
-    .INPUT_WIDTH()
-  )
-  ADD_TREE
-  (
-    .input_bus(),
-    .output_bus()
-  );
-  ------------------------------------------*/
   // [INTERNAL BUS]
   logic [N_STAGES:0][PWIDTH-1:0][ODATA_WIDTH-1:0] data;
 
@@ -79,6 +81,10 @@ module adder_tree #(
     end
   endgenerate
 
-  assign output_bus = data[N_STAGES][0];
+  always_comb begin
+    if(enable) output_bus = data;
+    else output_bus = 'd0;
+  end
+  //assign output_bus = data[N_STAGES][0];
 
 endmodule

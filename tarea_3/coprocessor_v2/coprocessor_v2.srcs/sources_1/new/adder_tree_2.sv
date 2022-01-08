@@ -82,7 +82,7 @@ module adder_tree #(
   endgenerate
 
   always_comb begin
-    if(enable) output_bus = data;
+    if(enable) output_bus = data[N_STAGES][0];
     else output_bus = 'd0;
   end
   //assign output_bus = data[N_STAGES][0];

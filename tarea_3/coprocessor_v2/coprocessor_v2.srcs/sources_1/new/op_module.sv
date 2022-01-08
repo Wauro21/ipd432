@@ -51,8 +51,10 @@ module op_module#(
   );
 
   enum logic [CMD_WIDTH-1:0]{WRITE = 3'd1, READ = 3'd2, SUM = 3'd3, AVG = 3'd4, MAN = 3'd5} commands;
-  logic [N_INPUTS-1:0][I_WIDTH-1:0] result;
+  logic [N_INPUTS-1:0][I_WIDTH-1:0] result, man_values;
   logic [N_INPUTS-1:0][I_WIDTH-1:0] sum;
+  logic [I_WIDTH-1:0] man_result;
+  logic adder_enable;
 
   genvar i;
   generate
@@ -67,8 +69,10 @@ module op_module#(
           SUM: result[i] = sum[i];
           AVG: result[i] = (sum[i]>>1);
           MAN: begin
-            if(A[i] >= B[i]) result[i] = A[i] - B[i];
-            else result[i] = B[i] - A[i];
+            if(A[i] >= B[i]) man_values[i] = A[i] - B[i];
+            else man_values[i] = B[i] - A[i];
+			if(i == N_INPUTS-1) result[N_INPUTS-1] = man_result;
+			else result[i] = 'd0;
           end
           default: result[i] = 'd0;
         endcase
@@ -81,4 +85,17 @@ module op_module#(
     if(enable) out = result;
     else out = 'd0;
   end
+
+  adder_tree #(
+  	.INPUTS(N_INPUTS),
+  	.INPUT_WIDTH(I_WIDTH)
+  )
+  ADD_TREE
+  (
+  	.enable(1'b1),
+  	.input_bus(man_values),
+  	.output_bus(man_result)
+  );
+
+
 endmodule

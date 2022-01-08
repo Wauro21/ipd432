@@ -21,7 +21,7 @@
 module op_sim();
   logic clk, enable, bram_sel;
   enum logic [2:0]{WRITE = 3'd1, READ = 3'd2, SUM = 3'd3, AVG = 3'd4, MAN = 3'd5} commands;
-  localparam  INPUTS = 1024;
+  localparam  INPUTS = 255;
   localparam  INPUT_WIDTH = 8;
   logic [INPUTS-1:0][INPUT_WIDTH-1:0] A;
   logic [INPUTS-1:0][INPUT_WIDTH-1:0] B;
@@ -45,9 +45,9 @@ module op_sim();
 
   genvar i;
   generate
-    for (i = 0;  i < 1024 ; i++) begin
-      assign buffer_a[i] = 'd100;
-      assign buffer_b[i] = 'd50;
+    for (i = 0;  i < INPUTS ; i++) begin
+      assign buffer_a[i] = 'd1;
+      assign buffer_b[i] = 'd0;
     end
   endgenerate
   always #1 clk = ~clk;

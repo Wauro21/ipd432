@@ -31,7 +31,7 @@ module top_coprocessor(
   );
 
   localparam  CMD_WIDTH = 3;
-  localparam  MEMORY_DEPTH = 1024;
+  localparam  MEMORY_DEPTH = 8;
   localparam  ADDRESS_WIDTH = $clog2(MEMORY_DEPTH);
   localparam  WAIT_READ_CYCLES = 3;
 
@@ -63,7 +63,8 @@ module top_coprocessor(
     .CMD_WIDTH(CMD_WIDTH),
     .MEMORY_DEPTH(MEMORY_DEPTH),
     .ADDRESS_WIDTH(ADDRESS_WIDTH),
-    .WAIT_READ_CYCLES(WAIT_READ_CYCLES)
+    .WAIT_READ_CYCLES(WAIT_READ_CYCLES),
+    .N_INPUTS(8)
   )
   CORE_CORE
   (

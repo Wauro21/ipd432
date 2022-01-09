@@ -76,7 +76,18 @@ module fsm_main_ctrl(
 		endcase
 	end
 
+	ila_1 MAN_CTRL_ILA (
+		.clk(clk), // input wire clk
 
+
+		.probe0(cmd_flag), // input wire [0:0]  probe0
+		.probe1(op_fsm_done), // input wire [0:0]  probe1
+		.probe2(tx_done), // input wire [0:0]  probe2
+		.probe3(core_lock), // input wire [0:0]  probe3
+		.probe4(op_fsm_enable), // input wire [0:0]  probe4
+		.probe5(tx_enable), // input wire [0:0]  probe5
+		.probe6(pr_state) // input wire [1:0]  probe6
+	);
 
 
 

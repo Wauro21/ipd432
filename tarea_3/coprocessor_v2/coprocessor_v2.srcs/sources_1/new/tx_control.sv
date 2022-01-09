@@ -34,7 +34,7 @@ module tx_control #(
     output logic done
   );
 
-  typedef enum logic [1:0] {IDLE, TX, WAIT, SHIFT, DONE} state;
+  typedef enum logic [2:0] {IDLE, TX, WAIT, SHIFT, DONE} state;
   state pr_state, nx_state;
 
   always_ff @ (posedge clk) begin
@@ -46,6 +46,7 @@ module tx_control #(
     nx_state = IDLE;
     tx_start = 1'b0;
     done = 1'b0;
+    shift = 1'b0;
     case (pr_state)
       IDLE: if(enable) nx_state = TX;
 
@@ -56,14 +57,14 @@ module tx_control #(
 
       WAIT: begin
         if(tx_busy) nx_state = WAIT;
-        else nx_state = DONE;
+        else nx_state = SHIFT;
       end
 
       SHIFT: begin
+        shift = 1'b1;
         if (max_address) nx_state = DONE;
         else begin
           nx_state = TX;
-          shift = 1'b1;
         end
       end
 

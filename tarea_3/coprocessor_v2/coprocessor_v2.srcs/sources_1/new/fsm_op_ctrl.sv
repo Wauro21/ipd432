@@ -97,4 +97,17 @@ module fsm_op_ctrl#(
 		endcase
 	end
 
+	ila_2 OP_FSM_CTRL (
+		.clk(clk), // input wire clk
+
+
+		.probe0(enable), // input wire [0:0]  probe0
+		.probe1(op_done), // input wire [0:0]  probe1
+		.probe2(write_done), // input wire [0:0]  probe2
+		.probe3(write_enable), // input wire [0:0]  probe3
+		.probe4(op_enable), // input wire [0:0]  probe4
+		.probe5(module_done), // input wire [0:0]  probe5
+		.probe6(pr_state) // input wire [2:0]  probe6
+	);
+
 endmodule

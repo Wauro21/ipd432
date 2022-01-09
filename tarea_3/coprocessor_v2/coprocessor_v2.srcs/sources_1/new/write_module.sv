@@ -34,7 +34,7 @@ module write_module#(
 	output logic done
     );
 	// INTERNAL LOGIC
-	logic write_enable, count_enable, done, max_count;
+	logic write_enable, count_enable, max_count;
 
 
 	// FSM WRITE CTRL
@@ -96,7 +96,24 @@ module write_module#(
 
 	// MEMORY SELECTION
 	always_comb begin
-		if(bram_sel) write_enable_b = write_enable;
-		else write_enable_a = write_enable;
+		if(bram_sel) begin
+		  write_enable_b = write_enable;
+		  write_enable_a = 1'b0;
+		end
+		else begin
+		 write_enable_a = write_enable;
+		 write_enable_b = 1'b0;
+		end
 	end
+
+	ila_0 WRITE_FSM_ILA (
+		.clk(clk), // input wire clk
+
+
+		.probe0(rx_ready), // input wire [0:0]  probe0
+		.probe1(enable), // input wire [0:0]  probe1
+		.probe2(max_count), // input wire [0:0]  probe2
+		.probe3(done), // input wire [0:0]  probe3
+		.probe4(pr_state) // input wire [2:0]  probe4
+	);
 endmodule

@@ -24,7 +24,8 @@ module coprocessor #(
     parameter CMD_WIDTH = 3,
     parameter MEMORY_DEPTH = 8,
     parameter ADDRESS_WIDTH = 3,
-    parameter WAIT_READ_CYCLES = 3
+    parameter WAIT_READ_CYCLES = 3,
+	parameter N_INPUTS = 1024
   )
   (
     input logic clk,
@@ -65,7 +66,7 @@ module coprocessor #(
     .clk(clk),
     .reset(~reset),
     .cmd_flag(cmd_flag),
-    .op_fsm_done(op_done),
+    .op_fsm_done(op_fsm_done),
     .tx_done(tx_done),
     .core_lock(core_lock),
     .op_fsm_enable(op_fsm_enable),
@@ -113,9 +114,8 @@ module coprocessor #(
   logic common_write_enable;
 
   // Memory write control
-  write_control #(
-    .MEMORY_DEPTH(MEMORY_DEPTH),
-    .ADDRESS_WIDTH(ADDRESS_WIDTH)
+  write_module #(
+    .N_VALUES(N_INPUTS)
   )
   COMMON_WRITE_CONTROL
   (
@@ -123,8 +123,10 @@ module coprocessor #(
     .reset(~reset),
     .enable(write_enable),
     .rx_ready(rx_ready),
-    .write_enable(common_write_enable),
-    .done(write_done)
+	.bram_sel(bram_sel),
+	.write_enable_a(write_enable_a),
+	.write_enable_b(write_enable_b),
+	.done(write_done)
   );
 
   tx_control #(
@@ -146,18 +148,14 @@ module coprocessor #(
   always_comb begin
     if(bram_sel) begin
       // Enable block B
-      write_enable_b = common_write_enable;
       write_data_b = rx_data;
       // Disable block A
-      write_enable_a = 1'b0;
       write_data_a = 8'd0;
     end
     else begin
       //Enable block A
-      write_enable_a = common_write_enable;
       write_data_a = rx_data;
       // Disable block B
-      write_enable_b = 1'b0;
       write_data_b = 8'd0;
     end
   end

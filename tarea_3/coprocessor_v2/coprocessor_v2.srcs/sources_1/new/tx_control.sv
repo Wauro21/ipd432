@@ -20,20 +20,25 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module tx_control(
-  input logic clk,
-  input logic reset,
-  input logic enable,
-  input logic tx_busy,
-  output logic tx_start,
-  output logic done
+module tx_control #(
+    parameter MEMORY_DEPTH = 8,
+    parameter ADDRESS_WIDTH = 3
+  )
+  (
+    input logic clk,
+    input logic reset,
+    input logic enable,
+    input logic tx_busy,
+    output logic tx_start,
+    output logic shift,
+    output logic done
   );
 
-  typedef enum logic [1:0] {IDLE, TX, WAIT, DONE} state;
+  typedef enum logic [1:0] {IDLE, TX, WAIT, SHIFT, DONE} state;
   state pr_state, nx_state;
 
   always_ff @ (posedge clk) begin
-    if(~reset) pr_state <= IDLE;
+    if(reset) pr_state <= IDLE;
     else pr_state <= nx_state;
   end
 
@@ -54,11 +59,33 @@ module tx_control(
         else nx_state = DONE;
       end
 
+      SHIFT: begin
+        if (max_address) nx_state = DONE;
+        else begin
+          nx_state = TX;
+          shift = 1'b1;
+        end
+      end
+
       DONE: begin
         done = 1'b1;
         nx_state = IDLE;
       end
     endcase
   end
+
+  address_counter #(
+    .MEMORY_DEPTH(MEMORY_DEPTH - 1),
+    .ADDRESS_WIDTH(ADDRESS_WIDTH)
+  )
+  WRITE_ADDRESS
+  (
+    .clk(clk),
+    .reset(reset),
+    .enable(count_enable),
+    .clear(done),
+    .address(address),
+    .max_address(max_address)
+  );
 
 endmodule

@@ -53,67 +53,40 @@ module coprocessor #(
   enum logic [CMD_WIDTH-1:0] {WRITE_CMD = 3'd1, READ_CMD = 3'd2, SUM_CMD = 3'd3, AVG_CMD = 3'd4, MAN_CMD = 3'd5, EUC_CMD = 3'd6} commands;
 
   // Main FSM
-  typedef enum logic [2:0] {IDLE, OP_SEL, WRITE,READ, OP, INVALID} state;
-  state current_state, next_state;
+  // typedef enum logic [2:0] {IDLE, OP_SEL, WRITE,READ, OP, INVALID} state;
+  // state current_state, next_state;
   // Outputs
-  logic write_block_enable, write_done, read_block_enable, read_done, op_done;
+  logic write_enable, write_done, read_block_enable, read_done, tx_done, tx_enable;
+  logic op_done, op_fsm_enable, op_fsm_done, op_enable;
 
   assign out_write = op_done;
 
-  always_ff @ (posedge clk) begin
-    if(~reset) current_state <= IDLE;
-    else current_state <= next_state;
-  end
+  fsm_main_ctrl MAIN_CTRL (
+    .clk(clk),
+    .reset(~reset),
+    .cmd_flag(cmd_flag),
+    .op_fsm_done(op_done),
+    .tx_done(tx_done),
+    .core_lock(core_lock),
+    .op_fsm_enable(op_fsm_enable),
+    .tx_enable(tx_enable)
+  );
 
-  always_comb begin
-    next_state = IDLE;
-    write_block_enable = 1'b0;
-    read_block_enable = 1'b0;
-    core_lock = 1'b0;
-    case (current_state)
-
-      IDLE: if (cmd_flag) next_state = OP_SEL;
-
-      OP_SEL: begin
-        next_state = INVALID;
-        case (cmd_dec)
-          WRITE_CMD: next_state = WRITE;
-          READ_CMD: next_state = READ;
-          SUM_CMD: next_state = OP;
-          AVG_CMD: next_state = OP;
-          MAN_CMD: next_state = OP;
-          EUC_CMD: next_state = OP;
-        endcase
-      end
-
-      WRITE: begin
-        write_block_enable = 1'b1;
-        core_lock = 1'b1;
-        if(write_done) next_state = IDLE;
-        else next_state = WRITE;
-      end
-
-      READ: begin
-        read_block_enable = 1'b1;
-        core_lock = 1'b1;
-        if(read_done) next_state = IDLE;
-        else next_state = READ;
-      end
-
-      OP: begin
-        read_block_enable = 1'b1;
-        core_lock = 1'b1;
-        if(read_done) next_state = IDLE;
-        else next_state = OP;
-      end
-
-      INVALID: begin
-        core_lock = 1'b1;
-        next_state = IDLE;
-      end
-
-    endcase
-  end
+  fsm_op_ctrl #(
+	  .CMD_WIDTH(CMD_WIDTH)
+	)
+  OP_CTRL
+	(
+    .clk(clk),
+    .reset(~reset),
+    .enable(op_fsm_enable),
+    .op_done(op_done),
+    .write_done(write_done),
+    .cmd(cmd_dec),
+    .write_enable(write_enable),
+    .op_enable(op_enable),
+    .module_done(op_fsm_done)
+  );
 
   //------------------------------------------------------------------[OP LOGIC]
   logic read_flag, next_read;
@@ -122,11 +95,12 @@ module coprocessor #(
     .N_INPUTS(MEMORY_DEPTH),
     .CMD_WIDTH(CMD_WIDTH)
   )
+  OP_MOD
   (
   	.clk(clk),
   	.reset(~reset),
     .cmd(cmd),
-    .enable(core_lock), // may change
+    .enable(op_enable), // may change
     .bram_sel(bram_sel),
     .A(read_data_a),
     .B(read_data_b),
@@ -147,10 +121,24 @@ module coprocessor #(
   (
     .clk(clk),
     .reset(~reset),
-    .enable(write_block_enable),
+    .enable(write_enable),
     .rx_ready(rx_ready),
     .write_enable(common_write_enable),
     .done(write_done)
+  );
+
+  tx_control #(
+    .MEMORY_DEPTH(MEMORY_DEPTH),
+    .ADDRESS_WIDTH(ADDRESS_WIDTH)
+  )
+  (
+    .clk(clk),
+    .reset(~reset),
+    .enable(tx_enable),
+    .tx_busy(tx_busy),
+    .tx_start(tx_start),
+    .shift(out_shift),
+    .done(tx_done)
   );
 
   // Memory Write block selector

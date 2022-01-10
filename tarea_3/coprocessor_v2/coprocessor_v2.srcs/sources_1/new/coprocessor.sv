@@ -65,7 +65,8 @@ module coprocessor #(
     .clk(clk),
     .reset(~reset),
     .cmd_flag(cmd_flag),
-    .op_fsm_done(op_done),
+    .cmd(cmd_dec),
+    .op_fsm_done(op_fsm_done),
     .tx_done(tx_done),
     .core_lock(core_lock),
     .op_fsm_enable(op_fsm_enable),
@@ -99,7 +100,7 @@ module coprocessor #(
   (
   	.clk(clk),
   	.reset(~reset),
-    .cmd(cmd),
+    .cmd(cmd_dec),
     .enable(op_enable), // may change
     .bram_sel(bram_sel),
     .A(read_data_a),
@@ -131,6 +132,7 @@ module coprocessor #(
     .MEMORY_DEPTH(MEMORY_DEPTH),
     .ADDRESS_WIDTH(ADDRESS_WIDTH)
   )
+  TX_CTRL
   (
     .clk(clk),
     .reset(~reset),
@@ -161,5 +163,28 @@ module coprocessor #(
       write_data_b = 8'd0;
     end
   end
+  
+  // logic [7:0] cmd_8bit;
+  
+  // always_ff @(posedge clk) begin
+  //   if (~reset) cmd_8bit <= 8'd0;
+  //   else cmd_8bit[CMD_WIDTH - 1:0] <= cmd_dec[CMD_WIDTH - 1:0];
+  // end
+  
+  // ila_0 ILA_0 (
+  //   .clk(clk), // input wire clk
+
+  //   .probe0(cmd_flag), // input wire [0:0]  probe0  
+  //   .probe1(core_lock), // input wire [0:0]  probe1 
+  //   .probe2(op_done), // input wire [0:0]  probe2 
+  //   .probe3(bram_sel), // input wire [0:0]  probe3 
+  //   .probe4(tx_enable), // input wire [0:0]  probe4 
+  //   .probe5(tx_done), // input wire [0:0]  probe5 
+  //   .probe6(rx_data), // input wire [7:0]  probe6 
+  //   .probe7(tx_data), // input wire [7:0]  probe7 
+  //   .probe8(read_data_a[1023]), // input wire [7:0]  probe8 
+  //   .probe9(out_data[1023]) // input wire [7:0]  probe9
+  // );
+  
 
 endmodule

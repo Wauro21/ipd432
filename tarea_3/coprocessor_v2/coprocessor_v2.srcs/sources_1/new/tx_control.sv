@@ -62,10 +62,10 @@ module tx_control #(
       end
 
       SHIFT: begin
+        shift = 1'b1;
         if (max_address) nx_state = DONE;
         else begin
           nx_state = TX;
-          shift = 1'b1;
         end
       end
 

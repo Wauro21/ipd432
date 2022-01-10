@@ -37,6 +37,7 @@ module fsm_main_ctrl(
 	input logic clk,
 	input logic reset,
 	input logic cmd_flag,
+	input logic [2:0] cmd,
 	input logic op_fsm_done,
 	input logic tx_done,
 	output logic core_lock,
@@ -45,6 +46,7 @@ module fsm_main_ctrl(
     );
 
 	typedef enum logic [1:0] {IDLE, OP, TX} state;
+	localparam WRITE_CMD = 3'd1;
 	state pr_state, nx_state;
 
 	always_ff @ (posedge clk) begin
@@ -63,7 +65,10 @@ module fsm_main_ctrl(
 			OP:	begin
 				core_lock = 1'b1;
 				op_fsm_enable = 1'b1;
-				if(op_fsm_done) nx_state = TX;
+				if(op_fsm_done) begin
+					if (cmd == WRITE_CMD) nx_state = IDLE;
+					else nx_state = TX;
+				end 
 				else nx_state = OP;
 			end
 

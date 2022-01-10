@@ -59,7 +59,7 @@ module coprocessor #(
   logic write_enable, write_done, read_block_enable, read_done, tx_done, tx_enable;
   logic op_done, op_fsm_enable, op_fsm_done, op_enable;
 
-  assign out_write = op_done;
+  assign out_write = op_fsm_done;
 
   fsm_main_ctrl MAIN_CTRL (
     .clk(clk),

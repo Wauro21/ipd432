@@ -5,11 +5,6 @@
                 <option name="name" value="eucDis"/>
             </pragma>
         </directive>
-        <directive functionName="eucDis" label="" functionLabel="">
-            <pragma name="TOP">
-                <option name="name" value="eucDis"/>
-            </pragma>
-        </directive>
     </sourceFile>
 </AutoPilot:ProjectResources>
 

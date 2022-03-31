@@ -9,5 +9,6 @@
 **/sim/
 **/syn
 
-# Ignore hiddenfolder
+# Ignore hiddenfolder and hiddenfiles
 **/.*/
+**/.*
